@@ -5,21 +5,32 @@ use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\Auth\OtpController;
 use App\Http\Controllers\Auth\PasswordResetController;
+use App\Http\Controllers\HomeController;
+use App\Http\Controllers\CoursesController;
+use App\Http\Controllers\GalleryController;
+use App\Http\Controllers\NoticeController;
+use App\Http\Controllers\ContactController;
+use App\Http\Controllers\ReviewController;
+use App\Http\Controllers\AdmissionController;
+use App\Http\Controllers\CertificateController;
 
-Route::get('/', function () {
-    return view('welcome');
-});
+// Public Routes
+Route::get('/', [HomeController::class, 'index'])->name('home');
+Route::get('/courses', [CoursesController::class, 'index'])->name('courses.index');
+Route::get('/courses/{slug}', [CoursesController::class, 'show'])->name('courses.show');
+Route::get('/gallery', [GalleryController::class, 'index'])->name('gallery.index');
+Route::get('/notices', [NoticeController::class, 'publicIndex'])->name('notices.index');
+Route::get('/notices/{id}', [NoticeController::class, 'show'])->name('notices.show');
+Route::get('/contact', [ContactController::class, 'index'])->name('contact.index');
+Route::post('/contact', [ContactController::class, 'store'])->name('contact.store');
+Route::get('/reviews', [ReviewController::class, 'index'])->name('reviews.index');
+Route::post('/reviews/store', [ReviewController::class, 'store'])->name('reviews.store');
+Route::get('/admission', [AdmissionController::class, 'create'])->name('admission.create');
+Route::post('/admission', [AdmissionController::class, 'store'])->name('admission.store');
+Route::get('/verify/{qrToken}', [CertificateController::class, 'verify'])->name('certificate.verify');
 
 Route::get('/about', function () {
     return view('about');
-});
-
-Route::get('/courses', function () {
-    return view('courses.index');
-});
-
-Route::get('/contact', function () {
-    return view('contact');
 });
 
 // Authentication Routes

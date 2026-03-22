@@ -6,6 +6,9 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>@yield('title', 'Padmabati Computer Academy')</title>
     
+    <!-- SEO -->
+    <x-seo />
+    
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     
@@ -30,41 +33,36 @@
             }
         }
     </script>
+    
+    <style>
+        .line-clamp-2 {
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+        .line-clamp-3 {
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+    </style>
 </head>
-<body class="bg-navy-900 min-h-screen">
+<body class="bg-[#0A1628] min-h-screen">
+    <!-- Navigation -->
+    <x-navbar />
+    
     <!-- Flash Messages -->
-    @if(session('success'))
-        <div x-data="{ show: true }" x-show="show" x-transition class="fixed top-4 right-4 bg-teal-600 text-white px-6 py-4 rounded-lg shadow-lg z-50">
-            <div class="flex items-center justify-between">
-                <div class="flex items-center">
-                    <i class="fas fa-check-circle mr-2"></i>
-                    {{ session('success') }}
-                </div>
-                <button @click="show = false" class="ml-4 text-white hover:text-gray-200">
-                    <i class="fas fa-times"></i>
-                </button>
-            </div>
-        </div>
-    @endif
-
-    @if(session('error'))
-        <div x-data="{ show: true }" x-show="show" x-transition class="fixed top-4 right-4 bg-red-600 text-white px-6 py-4 rounded-lg shadow-lg z-50">
-            <div class="flex items-center justify-between">
-                <div class="flex items-center">
-                    <i class="fas fa-exclamation-circle mr-2"></i>
-                    {{ session('error') }}
-                </div>
-                <button @click="show = false" class="ml-4 text-white hover:text-gray-200">
-                    <i class="fas fa-times"></i>
-                </button>
-            </div>
-        </div>
-    @endif
-
+    <x-flash-message />
+    
     <!-- Main Content -->
-    <div class="flex items-center justify-center min-h-screen px-4 py-12">
+    <main>
         @yield('content')
-    </div>
+    </main>
+    
+    <!-- Footer -->
+    <x-footer />
 
     <!-- Auto-hide flash messages -->
     <script>
@@ -72,8 +70,9 @@
             const messages = document.querySelectorAll('[x-data*="show: true"]');
             messages.forEach(message => {
                 setTimeout(() => {
-                    const alpine = message._x_dataStack?.[0];
-                    if (alpine) alpine.show = false;
+                    if (message.__x && message.__x.$data) {
+                        message.__x.$data.show = false;
+                    }
                 }, 5000);
             });
         });
