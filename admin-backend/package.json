@@ -5,7 +5,8 @@
     "private": true,
     "scripts": {
         "build": "echo 'No frontend build required for API backend'",
-        "dev": "echo 'No dev script for API backend'"
+        "start": "php artisan serve --host=0.0.0.0 --port=${PORT:-8080}",
+        "dev": "php artisan serve --host=0.0.0.0 --port=8002"
     },
     "devDependencies": {},
     "dependencies": {}
