@@ -1,0 +1,12 @@
+{
+    "name": "pca-admin-backend",
+    "version": "1.0.0",
+    "description": "PCA Admin API Backend",
+    "private": true,
+    "scripts": {
+        "build": "echo 'No frontend build required for API backend'",
+        "dev": "echo 'No dev script for API backend'"
+    },
+    "devDependencies": {},
+    "dependencies": {}
+}
