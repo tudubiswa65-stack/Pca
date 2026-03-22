@@ -2,7 +2,7 @@
 FROM node:20-alpine AS node-builder
 WORKDIR /app
 COPY package*.json ./
-RUN npm install --production
+RUN npm install
 COPY . .
 RUN npm run build || echo "No build script found"
 
@@ -19,7 +19,8 @@ RUN apk add --no-cache \
     zip \
     unzip \
     git \
-    curl
+    curl \
+    gettext
 
 # Configure and install PHP extensions
 RUN docker-php-ext-configure gd --with-freetype --with-jpeg \
@@ -55,21 +56,18 @@ RUN chown -R www-data:www-data /var/www/html \
     && chmod -R 755 /var/www/html/bootstrap/cache
 
 # Copy configuration files
-COPY docker/nginx.conf /etc/nginx/nginx.conf
+COPY docker/nginx.conf /etc/nginx/nginx.conf.template
 COPY docker/supervisord.conf /etc/supervisord.conf
 COPY docker/php-fpm.conf /usr/local/etc/php-fpm.d/www.conf
 COPY docker/php.ini /usr/local/etc/php/php.ini
+COPY docker/start.sh /start.sh
 
-# Create nginx directories
-RUN mkdir -p /var/log/nginx /var/lib/nginx/tmp/client_body
+# Create nginx directories and make start script executable
+RUN mkdir -p /var/log/nginx /var/lib/nginx/tmp/client_body \
+    && chmod +x /start.sh
 
-# Optimize Laravel for production
-RUN php artisan config:cache || echo "No config to cache" \
-    && php artisan route:cache || echo "No routes to cache" \
-    && php artisan view:cache || echo "No views to cache"
-
-# Expose port
+# Expose port (Railway will override with $PORT at runtime)
 EXPOSE 8080
 
-# Start supervisord
-CMD ["/usr/bin/supervisord", "-c", "/etc/supervisord.conf"]
+# Use start.sh to substitute $PORT and launch supervisord
+CMD ["/start.sh"]
